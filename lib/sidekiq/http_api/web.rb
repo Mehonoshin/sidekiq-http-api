@@ -21,15 +21,12 @@ module Sidekiq
         app.get '/api/queue/all' do
           content_type :json
 
-          response = Sidekiq::Queue.all.reduce({}) do |result, queue|
-            result[queue.name] = {
-              size: queue.size
-            }
-            result
-          end
-
-          response.to_json
+          Sidekiq::Queue.all.reduce({}) do |result, queue|
+            result.merge!(queue.name => { size: queue.size })
+          end.to_json
         end
+
+
       end
     end
   end
